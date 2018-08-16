@@ -4,7 +4,7 @@ Created By McSwampy 2018
 This is a class created as a wrapper for PHP MySQLi
 Copy class.MySQLi.php to your required directory.
 NOTE: Open class.MySQLi.php and set the server, username, password and default database before use to avoid unnecessary code
-
+```
 Functions:
 	SQL::I()->query(string "SQL Statement")
 	SQL::I()->update(array "Data", string "Table Name", array "Where", array "Like", string "Extra")
@@ -13,6 +13,7 @@ Functions:
 	SQL::I()->insert(array "Data", string "Table Name")
 	SQL::I()->changeUser(string "Username", string "Password")
 	SQL::I()->refresh()
+```
 	
 Next Update
 	SQL::I()->ssl(key, cert, ca, caPath, cipher)
