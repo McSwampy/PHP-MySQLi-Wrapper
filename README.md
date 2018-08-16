@@ -14,10 +14,10 @@ Functions:
 	SQL::I()->changeUser(string "Username", string "Password")
 	SQL::I()->refresh()
 ```
-	
+```
 Next Update
 	SQL::I()->ssl(key, cert, ca, caPath, cipher)
-	
+```
 Usage:
 	WITH SERVER DETAILS CHANGED IN CLASS FILE
 	
