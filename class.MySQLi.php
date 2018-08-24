@@ -24,7 +24,8 @@
 														$this->username,
 														$this->password,
 														$this->database,
-														$this->port);
+														$this->port
+														);
 			if(mysqli_connect_errno() > 0){
 				echo mysqli_connect_error();
 				die();
@@ -50,7 +51,11 @@
 				echo mysqli_error($this->Conn);die();
 			}
 			$this->queries++;
-			$rd							= $this->toArray($r);
+			if(is_bool($r)){
+				return $r;
+			}else{
+				$rd							= $this->toArray($r);
+			}
 			unset($sql, $r);
 			if($this->revert){
 				$this->switchDB($this->database);
@@ -61,13 +66,9 @@
 		private function toArray($res){
 			$arr						= [];
 			while($row = mysqli_fetch_assoc($res)){
-				foreach($row as $key=>$val){
-					$arr[]					= [
-						$key				=> $val
-					];
-				}
+				$arr[]					= $row;
 			}
-			unset($res, $key, $val, $row);
+			unset($res, $row);
 			return $arr;
 		}
 		public function error($text){
@@ -81,6 +82,7 @@
 			$d								= '';
 			$whereClause					= $this->genWhere($where);
 			$likeClause						= $this->genLike($like);
+			$ar								= $this->removeNotInTable($table, $ar);
 			foreach($ar as $key=>$val){
 				$val						= $this->convertText($val);
 				$d .= "`$key`='$val',";
@@ -137,6 +139,7 @@
 		public function insert($ar, $table){
 			$columns						= '';
 			$values							= '';
+			$ar								= $this->removeNotInTable($table, $ar);
 			foreach($ar as $key=>$val){
 				$val						= $this->convertText($val);
 				$columns .= "`$key`,";
@@ -164,6 +167,24 @@
 		}
 		public function ssl($key, $cert, $ca, $caPath, $cipher){
 			mysqli_ssl_set($this->Conn, $key, $cert, $ca, $caPath, $cipher);
+		}
+		public function removeNotInTable($table, $array){
+			$newArray						= [];
+			$columns						= $this->getColumns($table);
+			foreach($array as $key=>$value){
+				if(in_array($key, $columns)){
+					$newArray[$key]			= $value;
+				}
+			}
+			return $newArray;
+		}
+		public function getColumns($table){
+			$cols							= [];
+			$columns						= $this->query("SHOW COLUMNS FROM `$table`");
+			foreach($columns as $col){
+				$cols[] = $col['Field'];
+			}
+			return $cols;
 		}
 	}
 ?>
